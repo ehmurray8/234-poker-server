@@ -1,0 +1,20 @@
+spring:
+    application:
+        name: 234-poker-server
+    profiles:
+        active: ${environment:dev}
+
+poker-server:
+    allowed-origins: "https://234poker.emurray.dev"
+    cookie-domain: "emurray.dev"
+
+## Dev Profile
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+
+poker-server:
+    allowed-origins: "http://localhost:3000"
+    cookie-domain: "localhost"
