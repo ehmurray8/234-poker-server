@@ -1,6 +1,7 @@
 package dev.emurray.pokerserver.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.EventBus;
 import dev.emurray.pokerserver.handler.GlobalExceptionHandler;
 import dev.emurray.pokerserver.handler.PokerSocketHandler;
 import dev.emurray.pokerserver.handler.RequestHandler;
@@ -25,22 +26,22 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ObjectMapper objectMapper;
 
-    private final List<RequestHandler> requestHandlers;
-
     private final GlobalExceptionHandler globalExceptionHandler;
+
+    private final EventBus eventBus;
 
     public WebSocketConfig(
         ApplicationProperties applicationProperties,
         SessionRepository sessionRepository,
         ObjectMapper objectMapper,
-        List<RequestHandler> requestHandlers,
-        GlobalExceptionHandler globalExceptionHandler
+        GlobalExceptionHandler globalExceptionHandler,
+        EventBus eventBus
     ) {
         this.applicationProperties = applicationProperties;
         this.sessionRepository = sessionRepository;
         this.objectMapper = objectMapper;
-        this.requestHandlers = requestHandlers;
         this.globalExceptionHandler = globalExceptionHandler;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -56,8 +57,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
         return new PokerSocketHandler(
             sessionRepository,
             objectMapper,
-            requestHandlers,
-            globalExceptionHandler
+            globalExceptionHandler,
+            eventBus
         );
     }
 

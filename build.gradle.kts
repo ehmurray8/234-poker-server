@@ -39,17 +39,19 @@ repositories {
     mavenCentral()
 }
 
-
 repositories {
 	mavenCentral()
 }
 
 val immutablesVersion = "2.10.1"
+val recordBuilderVersion = "41"
+val guavaVersion = "33.1.0-jre"
 dependencies {
-    annotationProcessor("org.immutables:value:$immutablesVersion")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.immutables:value:$immutablesVersion")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("com.google.guava:guava:$guavaVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    annotationProcessor("io.soabase.record-builder:record-builder-processor:$recordBuilderVersion")
+    compileOnly("io.soabase.record-builder:record-builder-core:$recordBuilderVersion")
 }
 
 tasks.withType<Test> {

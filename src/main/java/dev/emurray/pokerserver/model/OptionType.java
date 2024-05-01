@@ -2,12 +2,16 @@ package dev.emurray.pokerserver.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ErrorDetailCode {
-    MALFORMED_REQUEST("malformed");
+public enum OptionType {
+    FOLD("fold"),
+    CHECK("check"),
+    CALL("call"),
+    RAISE("raise"),
+    BET("bet");
 
     private final String value;
 
-    ErrorDetailCode(String value) {
+    OptionType(String value) {
         this.value = value;
     }
 

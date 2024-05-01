@@ -3,8 +3,10 @@ package dev.emurray.pokerserver.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.EventBus;
 import dev.emurray.pokerserver.exception.InvalidMessageException;
 import dev.emurray.pokerserver.model.MessageType;
+import dev.emurray.pokerserver.model.SocketEvent;
 import dev.emurray.pokerserver.repository.SessionRepository;
 import java.util.List;
 import java.util.Optional;
@@ -25,27 +27,25 @@ public class PokerSocketHandler extends TextWebSocketHandler {
 
     private final GlobalExceptionHandler globalExceptionHandler;
 
-    private final List<RequestHandler> handlers;
+    private final EventBus eventBus;
 
     public PokerSocketHandler(
         SessionRepository sessionRepository,
         ObjectMapper objectMapper,
-        List<RequestHandler> requestHandlers,
-        GlobalExceptionHandler globalExceptionHandler
+        GlobalExceptionHandler globalExceptionHandler,
+        EventBus eventBus
     ) {
         this.sessionRepository = sessionRepository;
         this.objectMapper = objectMapper;
-        this.handlers = requestHandlers;
         this.globalExceptionHandler = globalExceptionHandler;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         var sessionId = getSessionId(session.getHandshakeHeaders());
         if (sessionId.isPresent()) {
-            if (sessionRepository.getSession(sessionId.get()).isEmpty()) {
-                sessionRepository.addSession(sessionId.get(), session);
-            }
+            sessionRepository.addSession(sessionId.get(), session);
         } else {
             // TODO: Better error handling here?
             session.close();
@@ -83,8 +83,8 @@ public class PokerSocketHandler extends TextWebSocketHandler {
             }
 
             String sessionId = getSessionId(session.getHandshakeHeaders()).get();
-            handlers.stream().filter(it -> it.canHandle(messageType))
-                .forEach(it -> it.handle(sessionId, session, messageDetails));
+            var event = new SocketEvent(session, sessionId, messageType, messageDetails);
+            eventBus.post(event);
         } catch (Exception e) {
             globalExceptionHandler.handleException(session, e);
         }

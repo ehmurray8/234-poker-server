@@ -14,7 +14,6 @@ import org.springframework.web.socket.WebSocketSession;
 @Component
 public class JoinRequestHandler implements RequestHandler {
 
-
     private final ObjectMapper objectMapper;
 
     private final PlayerRepository playerRepository;

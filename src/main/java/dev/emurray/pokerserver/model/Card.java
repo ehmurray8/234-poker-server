@@ -1,14 +1,11 @@
 package dev.emurray.pokerserver.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
+import io.soabase.recordbuilder.core.RecordBuilder;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableCard.class)
-@JsonDeserialize(as = ImmutableCard.class)
-public interface Card {
-    Rank rank();
 
-    Suit suit();
-}
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSerialize
+@RecordBuilder
+public record Card(Rank rank, Suit suit) {}

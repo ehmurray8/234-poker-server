@@ -4,7 +4,7 @@ import dev.emurray.pokerserver.MessageSender;
 import dev.emurray.pokerserver.exception.InvalidMessageException;
 import dev.emurray.pokerserver.model.ErrorDetailCode;
 import dev.emurray.pokerserver.model.ErrorResponse;
-import dev.emurray.pokerserver.model.ImmutableErrorResponse;
+import dev.emurray.pokerserver.model.ErrorResponseBuilder;
 import dev.emurray.pokerserver.model.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     private void sendMalformedRequestMessage(WebSocketSession session, String message) {
-        ErrorResponse errorResponse = ImmutableErrorResponse.builder()
+        ErrorResponse errorResponse = ErrorResponseBuilder.builder()
             .message(message)
             .detailCode(ErrorDetailCode.MALFORMED_REQUEST.getValue())
             .code(HttpStatus.BAD_REQUEST.value())
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     }
 
     private void sendServerException(WebSocketSession session) {
-        ErrorResponse errorResponse = ImmutableErrorResponse.builder()
+        ErrorResponse errorResponse = ErrorResponseBuilder.builder()
             .message("Internal Server Error")
             .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
             .build();

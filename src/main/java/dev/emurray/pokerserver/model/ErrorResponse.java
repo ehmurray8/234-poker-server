@@ -1,16 +1,10 @@
 package dev.emurray.pokerserver.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
+import io.soabase.recordbuilder.core.RecordBuilder;
 
-@Value.Immutable
-@JsonSerialize(as = ImmutableErrorResponse.class)
-@JsonDeserialize(as = ImmutableErrorResponse.class)
-public interface ErrorResponse {
-    String message();
-
-    int code();
-
-    String detailCode();
-}
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSerialize
+@RecordBuilder
+public record ErrorResponse(String message, int code, String detailCode) {}
